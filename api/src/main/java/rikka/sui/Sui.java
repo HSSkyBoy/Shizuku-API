@@ -5,24 +5,20 @@ import android.os.Parcel;
 
 import rikka.shizuku.Shizuku;
 import rikka.shizuku.SystemServiceHelper;
+import rikka.sui.util.BridgeConstants;
 
 public class Sui {
 
-    private static final int BRIDGE_TRANSACTION_CODE = ('_' << 24) | ('S' << 16) | ('U' << 8) | 'I';
-    private static final String BRIDGE_SERVICE_DESCRIPTOR = "android.app.IActivityManager";
-    private static final String BRIDGE_SERVICE_NAME = "activity";
-    private static final int BRIDGE_ACTION_GET_BINDER = 2;
-
     private static IBinder requestBinder() {
-        IBinder binder = SystemServiceHelper.getSystemService(BRIDGE_SERVICE_NAME);
+        IBinder binder = SystemServiceHelper.getSystemService(BridgeConstants.SERVICE_NAME);
         if (binder == null) return null;
 
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
         try {
-            data.writeInterfaceToken(BRIDGE_SERVICE_DESCRIPTOR);
-            data.writeInt(BRIDGE_ACTION_GET_BINDER);
-            binder.transact(BRIDGE_TRANSACTION_CODE, data, reply, 0);
+            data.writeInterfaceToken(BridgeConstants.SERVICE_DESCRIPTOR);
+            data.writeInt(BridgeConstants.ACTION_GET_BINDER);
+            binder.transact(BridgeConstants.TRANSACTION_CODE, data, reply, 0);
             reply.readException();
             IBinder received = reply.readStrongBinder();
             if (received != null) {
